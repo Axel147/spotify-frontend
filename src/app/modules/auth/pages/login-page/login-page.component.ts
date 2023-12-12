@@ -21,8 +21,6 @@ export class LoginPageComponent implements OnInit {
       email: new FormControl('',[
         Validators.required,
         Validators.email,
-        
-        
       ]),
       password: new FormControl('',[
         Validators.required,
@@ -38,7 +36,7 @@ export class LoginPageComponent implements OnInit {
     .subscribe(responseOk => { //cuando el usuario ingresa credenciales correctas
       const { tokenSession, data } = responseOk;
       this.cookie.set("token", tokenSession, 4, "/");
-      this.router.navigate(["/","tracks"])
+      this.router.navigate(["/","tracks"]);
       console.log("Sesion iniciada correctamente", responseOk);
     },
     err => {
