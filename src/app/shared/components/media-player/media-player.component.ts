@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { TrackModel } from '@core/models/tracks.model';
 import { MultimediaService } from '@shared/services/multimedia.service';
 import { Subscription, observable } from 'rxjs';
@@ -9,7 +9,8 @@ import { Subscription, observable } from 'rxjs';
   styleUrls: ['./media-player.component.css']
 })
 export class MediaPlayerComponent implements OnInit, OnDestroy {
-  listObservers$: Array<Subscription> = [];
+  @ViewChild('progressBar') progressBar: ElementRef = new ElementRef('')
+  listObservers$: Array<Subscription> = []
   state: string = 'paused'
 
   constructor(public multimediaService: MultimediaService) {}
@@ -25,4 +26,14 @@ export class MediaPlayerComponent implements OnInit, OnDestroy {
     this.listObservers$.forEach(u => u.unsubscribe());
   }
 
+  handlePosition(event: MouseEvent): void {
+    const elNative: HTMLElement = this.progressBar.nativeElement
+    const { x, width } = elNative.getBoundingClientRect()
+    const { clientX } = event 
+    const clickX = clientX - x
+    const percentageFromX = (clickX * 100) / width
+    this.multimediaService.seekAudio(percentageFromX)
+    
+    console.log(`click x: ${percentageFromX}`)
+  }
 }
